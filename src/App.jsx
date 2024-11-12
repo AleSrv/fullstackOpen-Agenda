@@ -1,110 +1,146 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
+import DisplayedPersons from './DisplayedPersons';
+import Filter from './Filter';
+
+const admins = [
+  { name: 'Arto Hellas', number: '040-123456', id: 1 },
+  { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+  { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+  { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+];
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: 'Alejandro' }, { name: 'Carlos' }, { name: 'Beatriz' }])
-  const [newName, setNewName] = useState('')
-  const [message, setMessage] = useState(false)
-  const [isSorted, setIsSorted] = useState(false) // checkbox ordenamiento alfabético
-  const [searchName, setSearchName] = useState("")
-  const [displayedPersons, setDisplayedPersons] = useState(persons) // Nueva lista de visualización
-  const inputRef = useRef(null)
-
-  // useEffect para enfocar el input al cargar el componente
-  useEffect(() => {
-    inputRef.current.focus()
-  }, [])
-
-  // Función cuando cambia el input de nombre
-  const handleChangeName = (e) => {
-    setNewName(e.target.value)
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    // Agregar nuevo nombre si no existe en la lista
-    if (!persons.find(person => person.name === newName)) {
-      const updatedPersons = [...persons, { name: newName }]
-      setPersons(updatedPersons)
-      setDisplayedPersons(updatedPersons)
-      setNewName('')
-      setMessage(false)
-    } else {
-      setMessage(true)
-      inputRef.current.select()
-    }
-  }
-
-  const handleSortChange = () => {
-    setIsSorted(!isSorted)
-    // Al hacer clic en el checkbox, aplica el ordenamiento a `displayedPersons`
-    const sortedPersons = [...displayedPersons].sort((a, b) =>
-      isSorted ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name)
-    )
-    setDisplayedPersons(sortedPersons)
-  }
+  const [persons, setPersons] = useState(admins);
+  const [newName, setNewName] = useState('');
+  const [newPhone, setNewPhone] = useState('');
+  const [message, setMessage] = useState({ activo: false, mostrar: '', target: '' });
+  const [isSorted, setIsSorted] = useState(false);
+  const [displayedPersons, setDisplayedPersons] = useState(persons);
+  const inputRef = useRef(null);
+  const phoneRef = useRef(null);
+  const [searchName, setSearchName] = useState('');
 
   const handleSearch = (e) => {
-    const searchValue = e.target.value
-    setSearchName(searchValue)
-    // Filtrar personas que contengan el texto de búsqueda
-    const filteredPersons = persons.filter(person =>
-      person.name.toLowerCase().includes(searchValue.toLowerCase())
-    )
+    setSearchName(e.target.value);
+  };
 
-    // Si `isSorted` está activo, ordenar los resultados filtrados
+  const limpiar = (setter) => {
+    setter('');
+  };
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    const filteredPersons = persons.filter((person) =>
+      person.name.toLowerCase().includes(searchName.toLowerCase())
+    );
+
     const finalDisplay = isSorted
       ? filteredPersons.sort((a, b) => a.name.localeCompare(b.name))
-      : filteredPersons
+      : filteredPersons;
 
-    setDisplayedPersons(finalDisplay)
-  }
+    setDisplayedPersons(finalDisplay);
+  }, [searchName, isSorted, persons]);
+
+  const handleChangeName = (e) => {
+    setNewName(e.target.value);
+  };
+
+  const handleChangePhone = (e) => {
+    setNewPhone(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (persons.some((person) => person.name.toLowerCase() === newName.toLowerCase())) {
+      setMessage({ activo: true, mostrar: 'El nombre ya existe', target: 'name' });
+      inputRef.current.select();
+      return;
+    }
+    if (newName === '') {
+      setMessage({ activo: true, mostrar: 'El campo de nombre no puede estar vacío', target: 'name' });
+      inputRef.current.select();
+      return;
+    }
+
+    if (newPhone < 0) {
+      setMessage({ activo: true, mostrar: 'El campo de teléfono no puede ser negivo ', target: 'phone' })
+      inputRef.current.select();
+      return;
+    }
+
+    if (newPhone === '') {
+      setMessage({ activo: true, mostrar: 'El campo de teléfono no puede estar vacío', target: 'phone' });
+      phoneRef.current.focus();
+      return;
+    }
+
+    const newId = persons.length > 0 ? Math.max(...persons.map(p => p.id)) + 1 : 1;
+    const newPerson = { id: newId, name: newName, number: newPhone };
+    const updatedPersons = [...persons, newPerson];
+    setPersons(updatedPersons);
+    setDisplayedPersons(updatedPersons);
+    setNewName('');
+    setNewPhone('');
+    setMessage({ activo: false, mostrar: '', target: '' });
+  };
+
+  const handleSortChange = () => {
+    setIsSorted(!isSorted);
+  };
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          name: <input value={newName} onChange={handleChangeName} ref={inputRef} />
+      <h2>Agenda Telefónica</h2>
+      <form onSubmit={handleSubmit} className="form-container">
+        <div className="form-group" style={{ position: 'relative' }}>
+          <label htmlFor="name">Name:</label>
+          <input
+            id="name"
+            value={newName}
+            onChange={handleChangeName}
+            ref={inputRef}
+          />
+          {message.activo && message.target === 'name' && (
+            <div className="popover">{message.mostrar}</div>
+          )}
+        </div>
+        <div className="form-group" style={{ position: 'relative' }}>
+          <label htmlFor="number">Number:</label>
+          <input
+            id="number"
+            type="number"
+            max="999999999"
+            value={newPhone}
+            onChange={handleChangePhone}
+            ref={phoneRef}
+          />
+          {message.activo && message.target === 'phone' && (
+            <div className="popover">{message.mostrar}</div>
+          )}
         </div>
         <div>
-          <button type="submit" style={{ margin: "5px" }}>
-            Agregar
-          </button>
+          <button type="submit">Agregar</button>
         </div>
       </form>
 
-      <div style={message ? { background: "red" } : { background: "white" }}>
-        <div>debug: {newName}</div>
-        <p>{message ? "Ya existe en la lista" : ""}</p>
-      </div>
+      <Filter limpiar={limpiar} setSearchName={setSearchName} searchName={searchName} handleSearch={handleSearch} />
 
-      {/* Input de búsqueda */}
-      <input
-        type="text"
-        placeholder="Buscar..."
-        onChange={handleSearch}
-        value={searchName}
-        style={{ marginTop: "10px", marginBottom: "10px" }}
-      />
+      <h2>Listado</h2>
 
-      {/* Checkbox para ordenar */}
-      <fieldset style={{ border: "1px solid #ccc", padding: "10px", marginTop: "15px" }}>
+      <fieldset style={{ border: '1px solid #ccc', padding: '10px', marginTop: '15px' }}>
         <legend>Opciones de Ordenamiento</legend>
-        <div>
-          <label>
-            <input type="checkbox" checked={isSorted} onChange={handleSortChange} />
-            Ordenar alfabéticamente
-          </label>
-        </div>
+        <label>
+          <input type="checkbox" checked={isSorted} onChange={handleSortChange} />
+          Ordenar alfabéticamente
+        </label>
       </fieldset>
-
-      <h2>Numbers</h2>
-      {displayedPersons.map((person, index) => (
-        <p key={index}>{index + 1} - {person.name}</p>
-      ))}
+      <DisplayedPersons displayedPersons={displayedPersons} />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
