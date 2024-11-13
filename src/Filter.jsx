@@ -8,6 +8,7 @@ export default function Filter({ limpiar, searchName, setSearchName, handleSearc
         <input
             type="text"
             placeholder="Buscar..."
+            name='search'
             onChange={handleSearch}
             value={searchName}
             onBlur={() => limpiar(setSearchName)}

@@ -6,8 +6,8 @@ const DisplayedPersons = ({ displayedPersons }) => {
     return (
         <ul>
             {displayedPersons.map(person => (
-                <li key={person.id}>
-                    <strong>{person.id}- {person.name} {person.number}</strong>
+                <li key={person.posicion}>
+                    <strong>{person.posicion}- {person.name} {person.number}</strong>
                 </li>
             ))}
         </ul>
@@ -17,9 +17,9 @@ const DisplayedPersons = ({ displayedPersons }) => {
 DisplayedPersons.propTypes = {
     displayedPersons: PropTypes.arrayOf(
         PropTypes.shape({
-            id: PropTypes.number,
-            name: PropTypes.string.isRequired, // name como string requerido
-            number: PropTypes.string.isRequired // number como string requerido
+            posicion: PropTypes.number,
+            name: PropTypes.string.isRequired, // name como string requerposiciono
+            number: PropTypes.string.isRequired // number como string requerposiciono
         })
     ).isRequired
 };
