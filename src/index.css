@@ -145,7 +145,7 @@ input[type="number"] {
   top: -120%; /* Para que esté más arriba */
   left: 50%;
   transform: translateX(-50%);
-  width: 300px;
+  width: 360px;
   padding: 16px;
   background-color: #fff;
   border: 1px solid #ccc;
@@ -153,7 +153,6 @@ input[type="number"] {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
-
 
 
 /* Ordenamiento de campo */

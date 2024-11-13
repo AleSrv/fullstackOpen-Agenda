@@ -1,18 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import DisplayedPersons from './DisplayedPersons';
-import Filter from './Filter';
-import FormPhone from './FormPhone';
-import CamposOrden from './CamposOrden';
+import CamposOrden from './components/CamposOrden';
+import DisplayedPersons from './components/DisplayedPersons';
+import Filter from './components/Filter';
+import FormPhone from './components/FormPhone';
 
-const admins = [
-  { name: 'Arto Hellas', number: '040-123456', posicion: 1 },
-  { name: 'Ada Lovelace', number: '39-44-5323523', posicion: 2 },
-  { name: 'Dan Abramov', number: '12-43-234345', posicion: 3 },
-  { name: 'Mary Poppendieck', number: '39-23-6423122', posicion: 4 }
-];
+// const admins = [
+//   { name: 'Arto Hellas', number: '040-123456', posicion: 1 },
+//   { name: 'Ada Lovelace', number: '39-44-5323523', posicion: 2 },
+//   { name: 'Dan Abramov', number: '12-43-234345', posicion: 3 },
+//   { name: 'Mary Poppendieck', number: '39-23-6423122', posicion: 4 }
+// ];
+// Cargar datos iniciales desde localStorage
+const storedPersons = localStorage.getItem('contacts')
+  ? JSON.parse(localStorage.getItem('contacts'))
+  : [];
 
 const App = () => {
-  const [persons, setPersons] = useState(admins);
+  const [persons, setPersons] = useState(storedPersons);
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [message, setMessage] = useState({ activo: false, mostrar: '', target: '' });
@@ -24,6 +28,8 @@ const App = () => {
 
   const limpiar = (setter) => setter('');
 
+
+
   useEffect(() => {
     inputRef.current.focus();
   }, []);
@@ -33,6 +39,11 @@ const App = () => {
     const finalDisplay = isSorted ? [...filteredPersons].sort((a, b) => a.name.localeCompare(b.name)) : filteredPersons;
     setDisplayedPersons(finalDisplay);
   }, [searchName, isSorted, persons]);
+
+  // Guardar en localStorage cada vez que persons cambia
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(persons));
+  }, [persons]);
 
   useEffect(() => {
     if (message.activo) {
@@ -50,6 +61,7 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (persons.some(person => person.name.toLowerCase() === newName.toLowerCase())) {
       setMessage({ activo: true, mostrar: 'El nombre ya existe', target: 'name' });
       inputRef.current.select();
@@ -60,10 +72,20 @@ const App = () => {
       phoneRef.current.focus();
       return;
     }
+
+    // Crear el nuevo contacto
     const newposicion = persons.length > 0 ? Math.max(...persons.map(p => p.posicion)) + 1 : 1;
-    setPersons([...persons, { posicion: newposicion, name: newName, number: newPhone }]);
-    setNewName(''); setNewPhone(''); setMessage({ activo: false, mostrar: '', target: '' });
+    const newContact = { posicion: newposicion, name: newName, number: newPhone };
+
+    // Actualizar el estado de persons
+    setPersons([...persons, newContact]);
+
+    // Limpiar campos y mensaje
+    setNewName('');
+    setNewPhone('');
+    setMessage({ activo: false, mostrar: '', target: '' });
   };
+
 
   return (
     <div>
