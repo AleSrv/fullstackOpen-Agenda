@@ -4,12 +4,6 @@ import DisplayedPersons from './components/DisplayedPersons';
 import Filter from './components/Filter';
 import FormPhone from './components/FormPhone';
 
-// const admins = [
-//   { name: 'Arto Hellas', number: '040-123456', posicion: 1 },
-//   { name: 'Ada Lovelace', number: '39-44-5323523', posicion: 2 },
-//   { name: 'Dan Abramov', number: '12-43-234345', posicion: 3 },
-//   { name: 'Mary Poppendieck', number: '39-23-6423122', posicion: 4 }
-// ];
 // Cargar datos iniciales desde localStorage
 const storedPersons = localStorage.getItem('contacts')
   ? JSON.parse(localStorage.getItem('contacts'))
@@ -86,6 +80,21 @@ const App = () => {
     setMessage({ activo: false, mostrar: '', target: '' });
   };
 
+  //FUNCION ELIMINAR CONTACTO EN DISPLAYPERSONS
+  const handleDelete = (posicion) => {
+    const filteredPersons = persons.filter(person => person.posicion !== posicion);
+    setPersons(filteredPersons);
+  };
+  //FUNCION EDITAR CONTACTO EN DISPALYPERSONS
+  const handleEdit = (posicion, newName, newPhone) => {
+    const updatedPersons = persons.map(person =>
+      person.posicion === posicion
+        ? { ...person, name: newName, number: newPhone }
+        : person
+    );
+    setPersons(updatedPersons);
+  };
+
 
   return (
     <div>
@@ -103,7 +112,7 @@ const App = () => {
       <Filter limpiar={limpiar} setSearchName={setSearchName} searchName={searchName} handleSearch={handleChange} />
       <h2>Listado</h2>
       <CamposOrden isSorted={isSorted} handleSortChange={() => setIsSorted(!isSorted)} />
-      <DisplayedPersons displayedPersons={displayedPersons} />
+      <DisplayedPersons displayedPersons={displayedPersons} handleDelete={handleDelete} handleEdit={handleEdit} />
     </div>
   );
 };
