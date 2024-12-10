@@ -5,13 +5,13 @@ export default function FormPhone({ handleSubmit, setName, name, phone, setPhone
         <form onSubmit={handleSubmit} className="form-container">
             <input
                 type="text"
-                placeholder="Nombre"
+                placeholder="Ingrese un nombre ..."
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             />
             <input
                 type="text"
-                placeholder="Teléfono"
+                placeholder="Ingrese un teléfono ..."
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
             />

@@ -19,8 +19,8 @@ export default function Filter({ limpiar, searchName, setSearchName, handleSearc
 }
 
 Filter.propTypes = {
-    limpiar: PropTypes.func.isRequired,       // validar como función
-    searchName: PropTypes.string.isRequired,  // validar como string
-    setSearchName: PropTypes.func.isRequired, // validar como función
-    handleSearch: PropTypes.func.isRequired   // validar como función
+    limpiar: PropTypes.func.isRequired,
+    searchName: PropTypes.string.isRequired,
+    setSearchName: PropTypes.func.isRequired,
+    handleSearch: PropTypes.func.isRequired
 };

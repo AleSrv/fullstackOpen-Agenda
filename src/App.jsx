@@ -1,34 +1,34 @@
 //src\App.jsx
-import { useState, useEffect } from 'react';
-import contactsService from './services/contacts'
-import { v4 as uuidv4 } from 'uuid';
-import FormPhone from './components/FormPhone';
+import { useState, useEffect } from "react";
+import contactsService from "./services/contacts";
+import { v4 as uuidv4 } from "uuid";
+import FormPhone from "./components/FormPhone";
+import DisplayedPersons from "./components/DisplayedPersons";
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [filter, setFilter] = useState("");
+  const [order, setOrder] = useState(false); // Cambiado a booleano para mayor claridad
 
-  // Fetch initial data from db.json
+  //Carga inicial contactos
   useEffect(() => {
     contactsService
       .getAll()
-      .then(initialContacts => {
+      .then((initialContacts) => {
         setContacts(initialContacts);
       })
-      .catch(error => {
-        console.error('Error fetching data:', error);
+      .catch((error) => {
+        console.error("Error fetching data:", error);
       });
   }, []);
 
-  //HACER UNA LISTA FAVORITOS ESTRELLA (TOOGLE)
-  // Guardar Contacto
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    addContact()
-  }
+  const handleCheckboxChange = (e) => {
+    setOrder(e.target.checked); // Actualiza `order` según el estado del checkbox
+  };
 
-  //Crear contacto
+  // Crear contacto
   const addContact = () => {
     if (!name.trim() || !phone.trim()) {
       alert("Nombre y Teléfono son obligatorios");
@@ -53,7 +53,7 @@ const App = () => {
       });
   };
 
-  //Eliminar contacto
+  // Borrar contacto
   const handleDelete = (id) => {
     if (window.confirm("¿Estás seguro de eliminar este contacto?")) {
       contactsService
@@ -68,28 +68,56 @@ const App = () => {
     }
   };
 
+  // Filtrar contactos por nombre
+  const filteredContacts = contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
 
+  // Ordenar contactos si el checkbox está activo
+  const displayedContacts = order
+    ? [...filteredContacts].sort((a, b) => a.name.localeCompare(b.name))
+    : filteredContacts;
 
   return (
     <div>
       <h1>Agenda Telefónica</h1>
+
+      <h2>Buscar Nombre:</h2>
+      <input
+        type="text"
+        placeholder="Ingrese nombre para buscar..."
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+      />
+
+      <h2>Agregar Nombre:</h2>
       <FormPhone
-        handleSubmit={handleSubmit}
-        setName={setName}
+        handleSubmit={(e) => {
+          e.preventDefault();
+          addContact();
+        }}
         name={name}
+        setName={setName}
         phone={phone}
         setPhone={setPhone}
       />
 
+      <h2>Listado de Contactos:</h2>
+      <label>
+        Ordenar listado
+        <input
+          type="checkbox"
+          name="order"
+          id="order"
+          checked={order}
+          onChange={handleCheckboxChange} // Conectar manejador
+        />
+      </label>
 
-      <ul>
-        {contacts.map((contact, index) => (
-          <li key={contact.id}>
-            {index + 1}. {contact.name} - {contact.phone}
-            <button onClick={() => handleDelete(contact.id)}>Eliminar</button>
-          </li>
-        ))}
-      </ul>
+      <DisplayedPersons
+        handleDelete={handleDelete}
+        filteredContacts={displayedContacts} // Usar contactos ordenados si corresponde
+      />
     </div>
   );
 };
