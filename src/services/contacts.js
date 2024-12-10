@@ -1,5 +1,6 @@
 //src\services\contacts.js
 import axios from "axios";
+//JSON Server proporciona rutas CRUD (GET, POST, PUT, DELETE) automáticamente basándose en db.json.
 const baseUrl = "http://localhost:3001/contacts";
 
 //Leer contactos
