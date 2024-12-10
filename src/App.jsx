@@ -1,6 +1,8 @@
+//src\App.jsx
 import { useState, useEffect } from 'react';
 import contactsService from './services/contacts'
 import { v4 as uuidv4 } from 'uuid';
+import FormPhone from './components/FormPhone';
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
@@ -26,7 +28,7 @@ const App = () => {
     addContact()
   }
 
-  //Agregar contacto
+  //Crear contacto
   const addContact = () => {
     if (!name.trim() || !phone.trim()) {
       alert("Nombre y Teléfono son obligatorios");
@@ -51,30 +53,40 @@ const App = () => {
       });
   };
 
+  //Eliminar contacto
+  const handleDelete = (id) => {
+    if (window.confirm("¿Estás seguro de eliminar este contacto?")) {
+      contactsService
+        .deleteContact(id)
+        .then(() => {
+          const contactsTemp = contacts.filter((contact) => contact.id !== id);
+          setContacts(contactsTemp);
+        })
+        .catch((error) => {
+          console.error("Error deleting contact:", error);
+        });
+    }
+  };
+
+
 
   return (
     <div>
       <h1>Agenda Telefónica</h1>
-      <form onSubmit={handleSubmit} className="form-container">
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Teléfono"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-        <button type="submit">Agregar Contacto</button>
-      </form>
+      <FormPhone
+        handleSubmit={handleSubmit}
+        setName={setName}
+        name={name}
+        phone={phone}
+        setPhone={setPhone}
+      />
+
 
       <ul>
         {contacts.map((contact, index) => (
           <li key={contact.id}>
             {index + 1}. {contact.name} - {contact.phone}
+            <button onClick={() => handleDelete(contact.id)}>Eliminar</button>
           </li>
         ))}
       </ul>
