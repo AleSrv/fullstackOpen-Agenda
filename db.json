@@ -3,17 +3,18 @@
     {
       "id": "55e4c1a2-c3f6-4ae8-8922-56fd20edec62",
       "name": "ALE",
-      "phone": "999999999"
+      "phone": "999999999",
+      "favorite": true
     },
     {
-      "id": "74cd2552-6763-4dee-9a8d-3e2558227dda",
-      "name": "Lucia",
-      "phone": "888888888"
-    },
-    {
-      "id": "61dafaae-1b17-4a05-8971-bbbc0b6abb1b",
+      "id": "8f1484de-698b-4671-a018-e349f30ef37d",
       "name": "Nico",
-      "phone": "333333333"
+      "phone": "666666"
+    },
+    {
+      "id": "c60a6418-1f12-48e9-8477-5bf9de6c0b94",
+      "name": "Angela",
+      "phone": "8888888"
     }
   ]
 }
