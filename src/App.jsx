@@ -39,6 +39,7 @@ const App = () => {
       id: uuidv4(),
       name,
       phone,
+      "favorite": false
     };
 
     contactsService
