@@ -20,11 +20,10 @@ export default function DisplayedPersons({ handleDelete, filteredContacts, toggl
                     <img
                         src={contact.favorite ? '/favorite.svg' : '/star.svg'}
                         alt={contact.favorite ? 'Favorito' : 'Normal'}
-                        className={contact.favorite ? 'icon-favorite active' : 'icon-favorite'}
+                        title={contact.favorite ? 'Eliminar de Favorito' : 'Agregar a favorito'}
                         onClick={() => toggleFavorite(contact.id)}
                     />
 
-                    {/* Botón de eliminar */}
                     <button onClick={() => handleDelete(contact.id)}>Eliminar</button>
                 </li>
             ))}

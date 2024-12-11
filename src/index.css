@@ -141,15 +141,6 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
-/* Contenedor base de formulario */
-.form-container {
-  display: flex;
-  flex-direction: column;
-  max-width: 500px;
-  margin: 0 auto;
-  gap: 20px; /* Separa todos los elementos dentro del formulario */
-}
-
 /* Estilo para los checkbox */
 label input[type="checkbox"] {
   margin-right: 10px;
@@ -160,6 +151,14 @@ label input[type="checkbox"] {
   margin-bottom: var(--checkbox-margin-bottom); /* Más separación entre los checkbox */
 }
 
+/* Contenedor base de formulario */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+  gap: 20px; /* Separa todos los elementos dentro del formulario */
+}
 
 /* Eliminar puntos en la lista */
 ul {

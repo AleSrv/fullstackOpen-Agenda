@@ -4,19 +4,19 @@
       "id": "d48b3611-aaea-4b68-9682-94dd666776bf",
       "name": "Alejandro",
       "phone": "99999999",
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "afffd8d5-304a-4997-a0b2-e72603e8ae70",
       "name": "Lucia",
       "phone": "222222222",
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "9848b6d9-42d2-48aa-b29c-274b993cecf7",
       "name": "Bea",
       "phone": "444444444",
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "10aab639-f4e0-42fb-bb25-8141b2450a87",
