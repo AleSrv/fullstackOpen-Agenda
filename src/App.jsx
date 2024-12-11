@@ -1,24 +1,24 @@
 //src\App.jsx
+import { v4 as uuidv4 } from "uuid";
+import { capitalizeWords } from "./utils/stringUtils";
 import { useState, useEffect } from "react";
 import contactsService from "./services/contacts";
-import { v4 as uuidv4 } from "uuid";
 import FormPhone from "./components/FormPhone";
 import DisplayedPersons from "./components/DisplayedPersons";
-import { capitalizeWords } from "./utils/stringUtils";
-import { EditPopup } from "./components/EditPopup";
+import EditPopup from "./components/EditPopup";
 
 const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [filter, setFilter] = useState("");
-  const [order, setOrder] = useState(false);
-  const [favorites, setFavorites] = useState(false)
-  const [isEditing, setIsEditing] = useState(false); // Controla la visibilidad del popup
-  const [editingContact, setEditingContact] = useState(null); // Almacena el contacto seleccionado
+  const [contacts, setContacts] = useState([]); // state Array contactos
+  const [name, setName] = useState(""); // state nombre
+  const [phone, setPhone] = useState(""); // state teléfono
+  const [filter, setFilter] = useState(""); // filtro nombre
+  const [order, setOrder] = useState(false); // checkbox Orden alfabético
+  const [favorites, setFavorites] = useState(false); // checkbox favoritos 
+  const [isEditing, setIsEditing] = useState(false); // Modo edicion
+  const [editingContact, setEditingContact] = useState(null); // contacto en edición
+  const [showSearch, setShowSearch] = useState(false); // Controla la visibilidad del input de búsqueda
+  const [showSave, setShowSave] = useState(false); // Controla la visibilidad del FormPhone
 
-
-  //Carga inicial contactos
   useEffect(() => {
     contactsService
       .getAll()
@@ -29,6 +29,14 @@ const App = () => {
         console.error("Error fetching data:", error);
       });
   }, []);
+
+  // efecto cambio en busqueda nombre filter
+  useEffect(() => {
+    if (!showSearch) {
+      setFilter(""); // Resetea el filtro al cerrar la búsqueda
+    }
+  }, [showSearch]);
+
 
   // Crear contacto
   const addContact = () => {
@@ -151,25 +159,40 @@ const App = () => {
     <div>
       <h1>Agenda Telefónica</h1>
 
-      <h2>Buscar Nombre:</h2>
-      <input
-        type="text"
-        placeholder="Ingrese nombre para buscar..."
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-      />
+      <button onClick={() => setShowSearch(!showSearch)}>
+        {showSearch ? "🔍 Ocultar búsqueda" : "🔍 Buscar contacto"}
+      </button>
 
-      <h2>Agregar Nombre:</h2>
-      <FormPhone
-        handleSubmit={(e) => {
-          e.preventDefault();
-          addContact();
-        }}
-        name={name}
-        setName={setName}
-        phone={phone}
-        setPhone={setPhone}
-      />
+
+      {showSearch && (
+        <div style={{ marginTop: "10px" }}>
+          <input
+            type="text"
+            placeholder="Ingrese nombre para buscar..."
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          />
+        </div>
+      )}
+
+
+      <button onClick={() => setShowSave(!showSave)}>
+        {showSave ? "Ocultar formulario" : "💾 Guardar contacto"}
+      </button>
+
+      {showSave && (
+        <FormPhone
+          handleSubmit={(e) => {
+            e.preventDefault();
+            addContact();
+          }}
+          name={name}
+          setName={setName}
+          phone={phone}
+          setPhone={setPhone}
+        />
+      )}
+
 
       {isEditing && editingContact && (
         <EditPopup
@@ -178,8 +201,6 @@ const App = () => {
           onSave={saveEdit}
         />
       )}
-
-
 
       <h2>Listado de Contactos:</h2>
       <label>
@@ -204,15 +225,16 @@ const App = () => {
         />
       </label>
 
-      {displayedContacts.length > 0
-        ? <DisplayedPersons
+      {displayedContacts.length > 0 ? (
+        <DisplayedPersons
           handleDelete={handleDelete}
           filteredContacts={displayedContacts}
           toggleFavorite={toggleFavorite}
           handleEdit={handleEdit}
         />
-        : <p>No hay contactos</p>
-      }
+      ) : (
+        <p>No hay contactos</p>
+      )}
     </div>
   );
 };

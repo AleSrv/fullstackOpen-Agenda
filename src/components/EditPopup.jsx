@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-export const EditPopup = ({ contact, onClose, onSave }) => {
+const EditPopup = ({ contact, onClose, onSave }) => {
     const [localContact, setLocalContact] = useState(contact);
 
-    // Sincroniza el estado local con los cambios en 'contact'
     useEffect(() => {
         setLocalContact(contact);
     }, [contact]);
@@ -34,7 +33,6 @@ export const EditPopup = ({ contact, onClose, onSave }) => {
     );
 };
 
-
 EditPopup.propTypes = {
     contact: PropTypes.shape({
         id: PropTypes.string.isRequired,
@@ -45,3 +43,5 @@ EditPopup.propTypes = {
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
 };
+
+export default EditPopup;

@@ -15,7 +15,7 @@ export default function FormPhone({ handleSubmit, setName, name, phone, setPhone
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
             />
-            <button type="submit">Agregar Contacto</button>
+            <button type="submit">Guardar</button>
         </form>
     )
 }
