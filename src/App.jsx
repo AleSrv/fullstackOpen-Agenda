@@ -4,6 +4,8 @@ import contactsService from "./services/contacts";
 import { v4 as uuidv4 } from "uuid";
 import FormPhone from "./components/FormPhone";
 import DisplayedPersons from "./components/DisplayedPersons";
+import { capitalizeWords } from "./utils/stringUtils";
+import { EditPopup } from "./components/EditPopup";
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
@@ -12,6 +14,9 @@ const App = () => {
   const [filter, setFilter] = useState("");
   const [order, setOrder] = useState(false);
   const [favorites, setFavorites] = useState(false)
+  const [isEditing, setIsEditing] = useState(false); // Controla la visibilidad del popup
+  const [editingContact, setEditingContact] = useState(null); // Almacena el contacto seleccionado
+
 
   //Carga inicial contactos
   useEffect(() => {
@@ -25,14 +30,6 @@ const App = () => {
       });
   }, []);
 
-  const handleCheckboxChange = (e) => {
-    setOrder(e.target.checked);  // Según checked guardo en state order
-  };
-
-  const handleCheckboxFavorite = (e) => {
-    setFavorites(e.target.checked)
-  }
-
   // Crear contacto
   const addContact = () => {
     if (!name.trim() || !phone.trim()) {
@@ -40,12 +37,12 @@ const App = () => {
       return;
     }
 
+    // Formatea el nombre para capitalizar palabras
+    const formattedName = capitalizeWords(name);
 
-
-    //Preparo el contacto
     const newContact = {
       id: uuidv4(),
-      name,
+      name: formattedName, // Usa el nombre formateado
       phone,
       favorite: false
     };
@@ -61,6 +58,7 @@ const App = () => {
         console.error("Error adding contact:", error);
       });
   };
+
 
   // Borrar contacto
   const handleDelete = (id) => {
@@ -96,6 +94,46 @@ const App = () => {
       });
   };
 
+  //Editar contacto (UPDATE)
+  const handleEdit = (id) => {
+    const contactToEdit = contacts.find(contact => contact.id === id);
+    if (!contactToEdit) return;
+    setEditingContact(contactToEdit);
+    setIsEditing(true);
+  };
+
+
+  const saveEdit = (updatedContact) => {
+    if (!updatedContact.name.trim() || !updatedContact.phone.trim()) {
+      alert("Nombre y Teléfono son obligatorios");
+      return;
+    }
+
+    // Formatea el nombre
+    const formattedName = capitalizeWords(updatedContact.name);
+    const contactToSave = { ...updatedContact, name: formattedName };
+
+    contactsService
+      .update(updatedContact.id, contactToSave)
+      .then((returnedContact) => {
+        setContacts(contacts.map(contact =>
+          contact.id === returnedContact.id ? returnedContact : contact
+        ));
+        setIsEditing(false);
+        setEditingContact(null);
+      })
+      .catch((error) => {
+        console.error("Error updating contact:", error);
+      });
+  };
+
+  const handleCheckboxChange = (e) => {
+    setOrder(e.target.checked);  // Según checked guardo en state order
+  };
+
+  const handleCheckboxFavorite = (e) => {
+    setFavorites(e.target.checked)
+  }
 
   // Filtrar contactos por nombre y por favoritos
   const filteredContacts = contacts
@@ -133,6 +171,16 @@ const App = () => {
         setPhone={setPhone}
       />
 
+      {isEditing && editingContact && (
+        <EditPopup
+          contact={editingContact}
+          onClose={() => setIsEditing(false)}
+          onSave={saveEdit}
+        />
+      )}
+
+
+
       <h2>Listado de Contactos:</h2>
       <label>
         Orden alfabético
@@ -156,12 +204,15 @@ const App = () => {
         />
       </label>
 
-
-      <DisplayedPersons
-        handleDelete={handleDelete}
-        filteredContacts={displayedContacts}
-        toggleFavorite={toggleFavorite}
-      />
+      {displayedContacts.length > 0
+        ? <DisplayedPersons
+          handleDelete={handleDelete}
+          filteredContacts={displayedContacts}
+          toggleFavorite={toggleFavorite}
+          handleEdit={handleEdit}
+        />
+        : <p>No hay contactos</p>
+      }
     </div>
   );
 };

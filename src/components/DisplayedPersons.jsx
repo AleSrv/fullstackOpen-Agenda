@@ -1,17 +1,30 @@
 import PropTypes from 'prop-types';
 
-export default function DisplayedPersons({ handleDelete, filteredContacts, toggleFavorite }) {
+export default function DisplayedPersons({ handleDelete, filteredContacts, toggleFavorite, handleEdit }) {
     return (
         <ul>
             {filteredContacts.map((contact, index) => (
                 <li key={contact.id}>
                     {index + 1}. {contact.name} : {contact.phone}
+
+                    {/* Ícono de editar */}
+                    <img
+                        src="/edit.svg"
+                        alt="Editar"
+                        title="Editar"
+                        className="icon-edit"
+                        onClick={() => handleEdit(contact.id)}  // Llamamos a handleEdit para abrir el popup
+                    />
+
+                    {/* Ícono de favorito */}
                     <img
                         src={contact.favorite ? '/favorite.svg' : '/star.svg'}
                         alt={contact.favorite ? 'Favorito' : 'Normal'}
-                        style={{ width: '20px', height: '20px', marginLeft: '10px', cursor: 'pointer' }}
+                        className={contact.favorite ? 'icon-favorite active' : 'icon-favorite'}
                         onClick={() => toggleFavorite(contact.id)}
                     />
+
+                    {/* Botón de eliminar */}
                     <button onClick={() => handleDelete(contact.id)}>Eliminar</button>
                 </li>
             ))}
@@ -29,5 +42,6 @@ DisplayedPersons.propTypes = {
             phone: PropTypes.string.isRequired,
             favorite: PropTypes.bool.isRequired
         })
-    ).isRequired
+    ).isRequired,
+    handleEdit: PropTypes.func.isRequired,  // Asegúrate de que la función handleEdit sea pasada como prop
 };

@@ -1,90 +1,137 @@
-/* Tipografía y colores base */
+/* Variables para colores y fuentes */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --primary-bg-color: #242424;
+  --secondary-bg-color: #1a1a1a;
+  --primary-text-color: rgba(255, 255, 255, 0.87);
+  --secondary-text-color: rgba(255, 255, 255, 0.6);
+  --button-bg-color: #1a1a1a;
+  --button-hover-bg-color: #747bff;
+  --button-border-color: #8e088e;
+  --input-bg-color: #333;
+  --input-border-color: #555;
+  --input-focus-border-color: #747bff;
+  --popup-bg-color: rgba(0, 0, 0, 0.5);
+  --popup-content-bg-color: #333;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --transition-speed: 0.25s;
+  --border-radius: 8px;
+  --button-font-size: 1em;
+  --input-padding: 8px;
+  --label-margin-right: 10px;
+  --input-margin-bottom: 20px;
+  --checkbox-margin-bottom: 20px;
+  --label-width: 40%;
+}
+
+/* Reseteo de márgenes y paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Tipografía y colores base */
+body {
+  font-family: var(--font-family);
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--primary-text-color);
+  background-color: var(--primary-bg-color);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Contenedor base */
-body {
-  margin: 0;
-  /* display: flex; */
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   min-width: 320px;
   min-height: 100vh;
   padding: 15px;
 }
 
 /* Títulos */
-h1,
-h2 {
+h1, h2 {
   line-height: 1.1;
-}
-
-/* Botones */
-button {
-  border-radius: 8px;
-  border: 2px solid;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+  color: var(--primary-text-color);
+  padding: 5px;
   margin: 5px;
 }
+
+/* Estilo para los botones */
+button {
+  border-radius: var(--border-radius);
+  border: 2px solid;
+  padding: 0.6em 1.2em;
+  font-size: var(--button-font-size);
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--button-bg-color);
+  cursor: pointer;
+  transition: border-color var(--transition-speed), background-color var(--transition-speed);
+  margin: 5px;
+  color: var(--primary-text-color);
+}
 button:hover {
-  border-color: #8e088e;
-  background-color: #747bff;
+  border-color: var(--button-border-color);
+  background-color: var(--button-hover-bg-color);
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* Formulario */
-.form-container {
+/* Estilo del popup */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--popup-bg-color);
   display: flex;
-  flex-direction: column;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-/* Grupos de formulario */
-.form-group {
-  display: flex;
-  flex-direction: row;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  position: relative;
 }
 
+.popup-content {
+  background: var(--popup-content-bg-color);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  text-align: center;
+  color: var(--primary-text-color);
+}
+
+/* Estilos para los formularios */
 label {
-  width: 40%; /* ancho de la columna izquierda */
+  width: var(--label-width);
   text-align: right;
-  margin-right: 10px;
+  margin-right: var(--label-margin-right);
   font-weight: bold;
+  color: var(--primary-text-color);
+  margin-bottom: 10px;
 }
 
-/* Estilo de inputs */
 input {
   width: 100%;
-  padding: 8px;
+  padding: var(--input-padding);
   box-sizing: border-box;
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  border-radius: var(--border-radius);
+  background-color: var(--input-bg-color);
+  border: 1px solid var(--input-border-color);
+  box-shadow: 2px 2px 5px var(--shadow-color);
+  color: var(--primary-text-color);
+  transition: border-color var(--transition-speed);
+  margin-bottom: var(--input-margin-bottom); /* Más separación entre los inputs */
 }
 
-/* Estilo para inputs numéricos sin botones de ajuste */
+input:focus {
+  border-color: var(--input-focus-border-color);
+  outline: none;
+}
+
+/* Ajustes para los inputs numéricos */
 input[type="number"] {
   appearance: textfield;
 }
@@ -100,96 +147,31 @@ input[type="number"]::-webkit-inner-spin-button {
   flex-direction: column;
   max-width: 500px;
   margin: 0 auto;
+  gap: 20px; /* Separa todos los elementos dentro del formulario */
 }
 
-/* Ajustes para los checkbox */
+/* Estilo para los checkbox */
 label input[type="checkbox"] {
-  margin-right: 10px; /* espacio entre checkbox y texto */
-  width: auto; /* evita que se expanda como los otros inputs */
-  box-shadow: none; /* sin sombra */
-}
-
-/* Mantener el estilo de sombras solo en inputs de texto */
-input[type="text"],
-input[type="number"] {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-/* Estilo del popover */
-.popover {
-  position: absolute;
-  background-color: #ffcccc;
-  border: 1px solid red;
-  padding: 10px;
-  border-radius: 5px;
-  width: 200px;
-  left: 120%;
-  transform: translateY(-50%);
-  z-index: 10;
-}
-.popover::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: -10px;
-  transform: translateY(-50%);
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent red transparent transparent;
-}
-
-.popoverDetails {
-  position: absolute;
-  top: -120%; /* Para que esté más arriba */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 360px;
-  padding: 16px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
+  margin-right: 10px;
+  width: auto;
+  box-shadow: none;
+  accent-color: var(--button-bg-color); /* Establece color del checkbox en modo oscuro */
+  margin-left: 10px; /* Añadir margen a la izquierda del checkbox */
+  margin-bottom: var(--checkbox-margin-bottom); /* Más separación entre los checkbox */
 }
 
 
-/* Ordenamiento de campo */
-fieldset {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-top: 15px;
-}
-legend {
-  font-weight: bold;
+/* Eliminar puntos en la lista */
+ul {
+  list-style-type: none;
+  padding-left: 0;
 }
 
-/* Ajustes responsivos */
-@media (max-width: 600px) {
-  .form-group {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  label {
-    width: auto;
-    text-align: left;
-    margin-bottom: 5px;
-  }
-}
 
-/* Tema claro */
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+/* Estilos adicionales para el modo oscuro */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--primary-bg-color);
+    color: var(--primary-text-color);
   }
 }
