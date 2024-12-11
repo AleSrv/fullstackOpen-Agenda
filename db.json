@@ -7,9 +7,27 @@
       "favorite": true
     },
     {
-      "id": "8f62c0db-afab-4614-8913-61b774492583",
+      "id": "683527cf-1879-4e1d-bf43-096f3bdd058b",
       "name": "lucca",
-      "phone": "444444444",
+      "phone": "44444444",
+      "favorite": false
+    },
+    {
+      "id": "1b72956a-27ec-47ba-a268-ac5ee4891e06",
+      "name": "Nico",
+      "phone": "111111111",
+      "favorite": true
+    },
+    {
+      "id": "fe47a859-fc6f-4cbd-8dbf-90d9fcf3cbb5",
+      "name": "Maria",
+      "phone": "222222222",
+      "favorite": true
+    },
+    {
+      "id": "813e2fd1-fdc9-43ec-a17f-6de27218ba00",
+      "name": "Lucia",
+      "phone": "555555555",
       "favorite": false
     }
   ]

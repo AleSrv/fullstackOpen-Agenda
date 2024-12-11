@@ -10,7 +10,8 @@ const App = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [filter, setFilter] = useState("");
-  const [order, setOrder] = useState(false); // Cambiado a booleano para mayor claridad
+  const [order, setOrder] = useState(false);
+  const [favorites, setFavorites] = useState(false)
 
   //Carga inicial contactos
   useEffect(() => {
@@ -25,8 +26,12 @@ const App = () => {
   }, []);
 
   const handleCheckboxChange = (e) => {
-    setOrder(e.target.checked); // Actualiza `order` según el estado del checkbox
+    setOrder(e.target.checked);  // Según checked guardo en state order
   };
+
+  const handleCheckboxFavorite = (e) => {
+    setFavorites(e.target.checked)
+  }
 
   // Crear contacto
   const addContact = () => {
@@ -35,11 +40,14 @@ const App = () => {
       return;
     }
 
+
+
+    //Preparo el contacto
     const newContact = {
       id: uuidv4(),
       name,
       phone,
-      "favorite": false
+      favorite: false
     };
 
     contactsService
@@ -69,15 +77,37 @@ const App = () => {
     }
   };
 
-  // Filtrar contactos por nombre
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  //Update contact favorite
+  const toggleFavorite = (id) => {
+    const contactToUpdate = contacts.find(contact => contact.id === id);
+    if (!contactToUpdate) return;
+
+    const updatedContact = { ...contactToUpdate, favorite: !contactToUpdate.favorite };
+
+    contactsService
+      .update(id, updatedContact)
+      .then((returnedContact) => {
+        setContacts(contacts.map(contact =>
+          contact.id === id ? returnedContact : contact
+        ));
+      })
+      .catch((error) => {
+        console.error("Error updating contact:", error);
+      });
+  };
+
+
+  // Filtrar contactos por nombre y por favoritos
+  const filteredContacts = contacts
+    .filter(contact => contact.name.toLowerCase().includes(filter.toLowerCase())) // Filtro por nombre
+    .filter(contact => (favorites ? contact.favorite : true)); // Filtro por favoritos
+
 
   // Ordenar contactos si el checkbox está activo
   const displayedContacts = order
     ? [...filteredContacts].sort((a, b) => a.name.localeCompare(b.name))
     : filteredContacts;
+
 
   return (
     <div>
@@ -105,19 +135,32 @@ const App = () => {
 
       <h2>Listado de Contactos:</h2>
       <label>
-        Ordenar listado
+        Orden alfabético
         <input
           type="checkbox"
           name="order"
           id="order"
           checked={order}
-          onChange={handleCheckboxChange} // Conectar manejador
+          onChange={handleCheckboxChange}
         />
       </label>
 
+      <label>
+        Mostrar favoritos
+        <input
+          type="checkbox"
+          name="favorites"
+          id="favorites"
+          checked={favorites}
+          onChange={handleCheckboxFavorite}
+        />
+      </label>
+
+
       <DisplayedPersons
         handleDelete={handleDelete}
-        filteredContacts={displayedContacts} // Usar contactos ordenados si corresponde
+        filteredContacts={displayedContacts}
+        toggleFavorite={toggleFavorite}
       />
     </div>
   );
