@@ -1,6 +1,6 @@
 /* Variables para colores y fuentes */
 :root {
-  --font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-family: "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
   --primary-bg-color: #242424;
   --secondary-bg-color: #1a1a1a;
   --primary-text-color: rgba(255, 255, 255, 0.87);
@@ -19,8 +19,8 @@
   --button-font-size: 1em;
   --input-padding: 8px;
   --label-margin-right: 10px;
-  --input-margin-bottom: 20px;
-  --checkbox-margin-bottom: 20px;
+  --input-margin-bottom: 10px;
+  --checkbox-margin-bottom: 10px;
   --label-width: 40%;
 }
 
@@ -52,7 +52,8 @@ body {
 }
 
 /* Títulos */
-h1, h2 {
+h1,
+h2 {
   line-height: 1.1;
   color: var(--primary-text-color);
   padding: 5px;
@@ -69,7 +70,8 @@ button {
   font-family: inherit;
   background-color: var(--button-bg-color);
   cursor: pointer;
-  transition: border-color var(--transition-speed), background-color var(--transition-speed);
+  transition: border-color var(--transition-speed),
+    background-color var(--transition-speed);
   margin: 5px;
   color: var(--primary-text-color);
 }
@@ -123,7 +125,10 @@ input {
   box-shadow: 2px 2px 5px var(--shadow-color);
   color: var(--primary-text-color);
   transition: border-color var(--transition-speed);
-  margin-bottom: var(--input-margin-bottom); /* Más separación entre los inputs */
+  margin-bottom: var(
+    --input-margin-bottom
+  ); /* Más separación entre los inputs */
+  margin-top: 10px;
 }
 
 input:focus {
@@ -146,9 +151,13 @@ label input[type="checkbox"] {
   margin-right: 10px;
   width: auto;
   box-shadow: none;
-  accent-color: var(--button-bg-color); /* Establece color del checkbox en modo oscuro */
+  accent-color: var(
+    --button-bg-color
+  ); /* Establece color del checkbox en modo oscuro */
   margin-left: 10px; /* Añadir margen a la izquierda del checkbox */
-  margin-bottom: var(--checkbox-margin-bottom); /* Más separación entre los checkbox */
+  margin-bottom: var(
+    --checkbox-margin-bottom
+  ); /* Más separación entre los checkbox */
 }
 
 /* Contenedor base de formulario */
@@ -166,6 +175,11 @@ ul {
   padding-left: 0;
 }
 
+img {
+  margin: 5px;
+  position: relative; /* O absolute, dependiendo del caso */
+  top: 10px; /* Ajusta el valor según lo necesites */
+}
 
 /* Estilos adicionales para el modo oscuro */
 @media (prefers-color-scheme: dark) {

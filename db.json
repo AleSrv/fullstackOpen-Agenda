@@ -7,21 +7,21 @@
       "favorite": true
     },
     {
-      "id": "9848b6d9-42d2-48aa-b29c-274b993cecf7",
-      "name": "Bea",
-      "phone": "444444444",
-      "favorite": false
-    },
-    {
       "id": "10aab639-f4e0-42fb-bb25-8141b2450a87",
       "name": "Juan Manuel",
       "phone": "666666666",
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "790a4e5e-acab-47a9-9043-6c846539261e",
       "name": "Alberto",
       "phone": "333333333",
+      "favorite": false
+    },
+    {
+      "id": "7c1e7f8e-8474-48e1-a184-0489f777b20e",
+      "name": "Manuel",
+      "phone": "555555555",
       "favorite": false
     }
   ]
