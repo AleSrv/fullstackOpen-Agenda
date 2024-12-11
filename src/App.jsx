@@ -6,6 +6,7 @@ import contactsService from "./services/contacts";
 import FormPhone from "./components/FormPhone";
 import DisplayedPersons from "./components/DisplayedPersons";
 import EditPopup from "./components/EditPopup";
+import { motion, AnimatePresence } from "framer-motion";
 
 const App = () => {
   const [contacts, setContacts] = useState([]); // state Array contactos
@@ -163,21 +164,29 @@ const App = () => {
         {showSearch ? "🔍 Ocultar búsqueda" : "🔍 Buscar contacto"}
       </button>
 
-
-      {showSearch && (
-        <div style={{ marginTop: "10px" }}>
-          <input
-            type="text"
-            placeholder="Ingrese nombre para buscar..."
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          />
-        </div>
-      )}
-
+      <AnimatePresence>
+        {showSearch && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="form-container"
+          >
+            <div style={{ marginTop: "10px" }}>
+              <input
+                type="text"
+                placeholder="Ingrese nombre para buscar..."
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <button onClick={() => setShowSave(!showSave)}>
-        {showSave ? "Ocultar formulario" : "💾 Guardar contacto"}
+        {showSave ? "Ocultar formulario" : "💾 Nuevo contacto"}
       </button>
 
       {showSave && (
