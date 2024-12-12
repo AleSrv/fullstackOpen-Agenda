@@ -12,7 +12,7 @@ export default function DisplayedPersons({ handleDelete, filteredContacts, toggl
                         src="/edit.svg"
                         alt="Editar"
                         title="Editar"
-                        className="icon-edit"
+                        // className="icon-edit"
                         onClick={() => handleEdit(contact.id)}  // Llamamos a handleEdit para abrir el popup
                     />
 

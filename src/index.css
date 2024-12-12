@@ -98,6 +98,7 @@ button:focus-visible {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999; /* Asegura que el popup esté sobre todo */
 }
 
 .popup-content {
@@ -182,6 +183,13 @@ img {
   margin: 5px;
   position: relative; /* O absolute, dependiendo del caso */
   top: 10px; /* Ajusta el valor según lo necesites */
+}
+
+/* Estilo de los íconos de editar y favorito */
+.icon-edit,
+.icon-favorite {
+  position: relative; /* Asegúrate de que se pueda controlar el z-index */
+  z-index: 1; /* Íconos debajo del popup */
 }
 
 .form-buttons {
