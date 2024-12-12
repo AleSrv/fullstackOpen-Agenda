@@ -37,7 +37,7 @@ const App = () => {
         setTimeout(() => {
           setIsError(false);
           setErrorMessage(null)
-        }, 5000)
+        }, 3000)
       });
   }, []);
 
@@ -60,7 +60,7 @@ const App = () => {
       setTimeout(() => {
         setIsError(false);
         setErrorMessage(null)
-      }, 5000)
+      }, 3000)
       return;
     }
 
@@ -72,7 +72,12 @@ const App = () => {
 
     // Validar el teléfono
     if (!validarTelefonoEspanol(phone.trim())) {
-      alert("El teléfono no es válido. Debe comenzar con 6, 7, 8 o 9 y tener 9 dígitos.");
+      setErrorMessage("El teléfono no es válido. Debe comenzar con 6, 7, 8 o 9 y tener 9 dígitos.");
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+        setErrorMessage(null)
+      }, 3000)
       return;
     }
 
@@ -103,7 +108,12 @@ const App = () => {
             setPhone("");
           })
           .catch((error) => {
-            console.error("Error updating contact:", error);
+            setErrorMessage("Error fetching data:", error);
+            setIsError(true);
+            setTimeout(() => {
+              setIsError(false);
+              setErrorMessage(null)
+            }, 3000)
           });
       } else {
         // Si el usuario cancela la acción, no hacer nada
@@ -129,7 +139,12 @@ const App = () => {
           setPhone("");
         })
         .catch((error) => {
-          console.error("Error adding contact:", error);
+          setErrorMessage("Error adding contact:", error);
+          setIsError(true);
+          setTimeout(() => {
+            setIsError(false);
+            setErrorMessage(null)
+          }, 3000)
         });
     }
   };
@@ -146,7 +161,12 @@ const App = () => {
           setContacts(contactsTemp);
         })
         .catch((error) => {
-          console.error("Error deleting contact:", error);
+          setErrorMessage("Error deleting contact:", error);
+          setIsError(true);
+          setTimeout(() => {
+            setIsError(false);
+            setErrorMessage(null)
+          }, 3000)
         });
     }
   };
@@ -167,7 +187,12 @@ const App = () => {
         ));
       })
       .catch((error) => {
-        console.error("Error updating contact:", error);
+        setErrorMessage("Error updating contact:", error);
+        setIsError(true);
+        setTimeout(() => {
+          setIsError(false);
+          setErrorMessage(null)
+        }, 3000)
       });
   };
 
@@ -183,7 +208,12 @@ const App = () => {
   const saveEdit = (updatedContact) => {
     // Validar nombre
     if (!updatedContact.name.trim()) {
-      alert("El nombre es obligatorio.");
+      setErrorMessage("El nombre es obligatorio.");
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+        setErrorMessage(null)
+      }, 3000)
       return;
     }
 
@@ -191,7 +221,12 @@ const App = () => {
 
     // Validar teléfono
     if (!validarTelefonoEspanol(updatedContact.phone.trim())) {
-      alert("El teléfono no es válido. Debe comenzar con 6, 7, 8 o 9 y tener 9 dígitos.");
+      setErrorMessage("El teléfono no es válido. Debe comenzar con 6, 7, 8 o 9 y tener 9 dígitos.");
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+        setErrorMessage(null)
+      }, 3000)
       return;
     }
 
@@ -212,7 +247,12 @@ const App = () => {
         setEditingContact(null);
       })
       .catch((error) => {
-        console.error("Error updating contact:", error);
+        setErrorMessage("Error updating contact:", error);
+        setIsError(true);
+        setTimeout(() => {
+          setIsError(false);
+          setErrorMessage(null)
+        }, 3000)
       });
   };
 
@@ -270,6 +310,12 @@ const App = () => {
         {showSave ? "Ocultar formulario" : "💾 Nuevo contacto"}
       </button>
 
+      {isError && errorMessage && (
+        <ErrorPopUp
+          errorMessage={errorMessage}
+        />
+      )}
+
       {showSave && (
         <FormPhone
           handleSubmit={addContact} // Pasa addContact directamente.
@@ -287,12 +333,6 @@ const App = () => {
           contact={editingContact} // Se pasa el contacto seleccionado como prop "contact"
           onClose={() => setIsEditing(false)} // Función para cerrar el popup
           onSave={saveEdit} // Función para guardar los cambios
-        />
-      )}
-
-      {isError && errorMessage && (
-        <ErrorPopUp
-          errorMessage={errorMessage}
         />
       )}
 
