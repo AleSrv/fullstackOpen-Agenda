@@ -1,28 +1,22 @@
 {
   "contacts": [
     {
-      "id": "d48b3611-aaea-4b68-9682-94dd666776bf",
-      "name": "Alejandro",
-      "phone": "99999999",
+      "id": "443420cf-05cb-491c-b34d-650d28a72eef",
+      "name": "Ale",
+      "phone": "987643211",
       "favorite": true
     },
     {
-      "id": "10aab639-f4e0-42fb-bb25-8141b2450a87",
-      "name": "Juan Manuel",
-      "phone": "666666666",
-      "favorite": false
-    },
-    {
-      "id": "790a4e5e-acab-47a9-9043-6c846539261e",
-      "name": "Alberto",
-      "phone": "333333333",
-      "favorite": false
-    },
-    {
-      "id": "7c1e7f8e-8474-48e1-a184-0489f777b20e",
+      "id": "a52706fb-0f2c-45a2-b01c-b101d5eb8119",
       "name": "Manuel",
-      "phone": "555555555",
+      "phone": "789456123",
       "favorite": false
+    },
+    {
+      "id": "2693d8e4-47ee-4949-b0f7-a26cad5846a9",
+      "name": "Lucia",
+      "phone": "654987321",
+      "favorite": true
     }
   ]
 }

@@ -1,12 +1,13 @@
 //src\App.jsx
 import { v4 as uuidv4 } from "uuid";
-import { capitalizeWords } from "./utils/stringUtils";
 import { useState, useEffect } from "react";
 import contactsService from "./services/contacts";
 import FormPhone from "./components/FormPhone";
 import DisplayedPersons from "./components/DisplayedPersons";
 import EditPopup from "./components/EditPopup";
 import { motion, AnimatePresence } from "framer-motion";
+import { capitalizeWords } from "./utils/stringUtils";
+import { validarTelefonoEspanol } from "./utils/validarUtils";
 
 const App = () => {
   const [contacts, setContacts] = useState([]); // state Array contactos
@@ -40,20 +41,29 @@ const App = () => {
 
 
   // Crear contacto
-  const addContact = () => {
-    if (!name.trim() || !phone.trim()) {
-      alert("Nombre y Teléfono son obligatorios");
+  const addContact = (e) => {
+    e.preventDefault(); // Evitar el comportamiento predeterminado del formulario.
+
+    // Validar el nombre
+    if (!name.trim()) {
+      alert("El nombre es obligatorio.");
       return;
     }
 
-    // Formatea el nombre para capitalizar palabras
-    const formattedName = capitalizeWords(name);
+    const formattedName = capitalizeWords(name.trim());
+    setName(formattedName); // Formatear el nombre al estilo capitalizado.
+
+    // Validar el teléfono
+    if (!validarTelefonoEspanol(phone.trim())) {
+      alert("El teléfono no es válido. Debe comenzar con 6, 7, 8 o 9 y tener 9 dígitos.");
+      return;
+    }
 
     const newContact = {
       id: uuidv4(),
-      name: formattedName, // Usa el nombre formateado
-      phone,
-      favorite: false
+      name: formattedName,
+      phone: phone.trim(),
+      favorite: false,
     };
 
     contactsService
@@ -67,6 +77,7 @@ const App = () => {
         console.error("Error adding contact:", error);
       });
   };
+
 
 
   // Borrar contacto
@@ -118,9 +129,7 @@ const App = () => {
       return;
     }
 
-    // Formatea el nombre
-    const formattedName = capitalizeWords(updatedContact.name);
-    const contactToSave = { ...updatedContact, name: formattedName };
+    const contactToSave = { ...updatedContact, name: updatedContact.name };
 
     contactsService
       .update(updatedContact.id, contactToSave)
@@ -191,15 +200,14 @@ const App = () => {
 
       {showSave && (
         <FormPhone
-          handleSubmit={(e) => {
-            e.preventDefault();
-            addContact();
-          }}
+          handleSubmit={addContact} // Pasa addContact directamente.
           name={name}
           setName={setName}
           phone={phone}
           setPhone={setPhone}
+          setShowSave={setShowSave}
         />
+
       )}
 
 
