@@ -53,32 +53,71 @@ const App = () => {
     const formattedName = capitalizeWords(name.trim());
     setName(formattedName); // Formatear el nombre al estilo capitalizado.
 
+    // Buscar nombre en contactos
+    const foundPerson = contacts.find(person => person.name === formattedName);
+
     // Validar el teléfono
     if (!validarTelefonoEspanol(phone.trim())) {
       alert("El teléfono no es válido. Debe comenzar con 6, 7, 8 o 9 y tener 9 dígitos.");
       return;
     }
 
-    const newContact = {
-      id: uuidv4(),
-      name: formattedName,
-      phone: phone.trim(),
-      favorite: false,
-    };
+    let contactToSave;
 
-    contactsService
-      .create(newContact)
-      .then((response) => {
-        setContacts([...contacts, response]);
-        setName("");
+    if (foundPerson) {
+      // Si el contacto existe, preguntar si quiere sobrescribir el teléfono
+      const confirmUpdate = window.confirm(`El contacto con el nombre "${formattedName}" ya existe. ¿Quieres actualizar el teléfono?`);
+
+      if (confirmUpdate) {
+        // Si el usuario confirma, actualizamos solo el teléfono
+        contactToSave = {
+          id: foundPerson.id,
+          name: foundPerson.name,
+          phone: phone.trim(),  // Solo se actualiza el teléfono
+          favorite: foundPerson.favorite
+        };
+
+        // Actualizar contacto en el servidor
+        contactsService
+          .update(foundPerson.id, contactToSave)
+          .then((updatedContact) => {
+            // Actualizar en el estado
+            setContacts(contacts.map(contact =>
+              contact.id === updatedContact.id ? updatedContact : contact
+            ));
+            setName("");  // Limpiar el formulario
+            setPhone("");
+          })
+          .catch((error) => {
+            console.error("Error updating contact:", error);
+          });
+      } else {
+        // Si el usuario cancela la acción, no hacer nada
+        setName("");  // Limpiar el formulario
         setPhone("");
-      })
-      .catch((error) => {
-        console.error("Error adding contact:", error);
-      });
+      }
+
+    } else {
+      // Si no se encuentra el contacto, crear uno nuevo
+      contactToSave = {
+        id: uuidv4(),
+        name: formattedName,
+        phone: phone.trim(),
+        favorite: false,
+      };
+
+      contactsService
+        .create(contactToSave)
+        .then((response) => {
+          setContacts([...contacts, response]);
+          setName("");  // Limpiar el formulario
+          setPhone("");
+        })
+        .catch((error) => {
+          console.error("Error adding contact:", error);
+        });
+    }
   };
-
-
 
   // Borrar contacto
   const handleDelete = (id) => {
