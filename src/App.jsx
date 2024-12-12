@@ -8,6 +8,7 @@ import EditPopup from "./components/EditPopup";
 import { motion, AnimatePresence } from "framer-motion";
 import { capitalizeWords } from "./utils/stringUtils";
 import { validarTelefonoEspanol } from "./utils/validarUtils";
+import ErrorPopUp from "./components/ErrorPopUp";
 
 const App = () => {
   const [contacts, setContacts] = useState([]); // state Array contactos
@@ -20,15 +21,23 @@ const App = () => {
   const [editingContact, setEditingContact] = useState(null); // contacto en edición
   const [showSearch, setShowSearch] = useState(false); // Controla la visibilidad del input de búsqueda
   const [showSave, setShowSave] = useState(false); // Controla la visibilidad del FormPhone
+  const [errorMessage, setErrorMessage] = useState("")
+  const [isError, setIsError] = useState(false); // Controla popup Errores
 
   useEffect(() => {
+    //CONEXION servidor GET
     contactsService
       .getAll()
       .then((initialContacts) => {
         setContacts(initialContacts);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        setErrorMessage("Error fetching data:", error);
+        setIsError(true);
+        setTimeout(() => {
+          setIsError(false);
+          setErrorMessage(null)
+        }, 5000)
       });
   }, []);
 
@@ -46,7 +55,12 @@ const App = () => {
 
     // Validar el nombre
     if (!name.trim()) {
-      alert("El nombre es obligatorio.");
+      setErrorMessage("El nombre es obligatorio.");
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+        setErrorMessage(null)
+      }, 5000)
       return;
     }
 
@@ -77,7 +91,7 @@ const App = () => {
           favorite: foundPerson.favorite
         };
 
-        // Actualizar contacto en el servidor
+        // CONEXION servidor PUT
         contactsService
           .update(foundPerson.id, contactToSave)
           .then((updatedContact) => {
@@ -106,6 +120,7 @@ const App = () => {
         favorite: false,
       };
 
+      // CONEXION servidor POST
       contactsService
         .create(contactToSave)
         .then((response) => {
@@ -122,6 +137,8 @@ const App = () => {
   // Borrar contacto
   const handleDelete = (id) => {
     if (window.confirm("¿Estás seguro de eliminar este contacto?")) {
+
+      // CONEXION servidor DELETE
       contactsService
         .deleteContact(id)
         .then(() => {
@@ -141,6 +158,7 @@ const App = () => {
 
     const updatedContact = { ...contactToUpdate, favorite: !contactToUpdate.favorite };
 
+    // CONEXION servidor PUT
     contactsService
       .update(id, updatedContact)
       .then((returnedContact) => {
@@ -158,18 +176,32 @@ const App = () => {
     const contactToEdit = contacts.find(contact => contact.id === id);
     if (!contactToEdit) return;
     setEditingContact(contactToEdit);
-    setIsEditing(true);
+    setIsEditing(true); // Activa el popup
   };
 
 
   const saveEdit = (updatedContact) => {
-    if (!updatedContact.name.trim() || !updatedContact.phone.trim()) {
-      alert("Nombre y Teléfono son obligatorios");
+    // Validar nombre
+    if (!updatedContact.name.trim()) {
+      alert("El nombre es obligatorio.");
       return;
     }
 
-    const contactToSave = { ...updatedContact, name: updatedContact.name };
+    const formattedName = capitalizeWords(updatedContact.name.trim());
 
+    // Validar teléfono
+    if (!validarTelefonoEspanol(updatedContact.phone.trim())) {
+      alert("El teléfono no es válido. Debe comenzar con 6, 7, 8 o 9 y tener 9 dígitos.");
+      return;
+    }
+
+    const contactToSave = {
+      ...updatedContact,
+      name: formattedName,
+      phone: updatedContact.phone.trim(), // Formatear el teléfono
+    };
+
+    // CONEXION servidor PUT
     contactsService
       .update(updatedContact.id, contactToSave)
       .then((returnedContact) => {
@@ -183,6 +215,7 @@ const App = () => {
         console.error("Error updating contact:", error);
       });
   };
+
 
   const handleCheckboxChange = (e) => {
     setOrder(e.target.checked);  // Según checked guardo en state order
@@ -249,12 +282,17 @@ const App = () => {
 
       )}
 
-
       {isEditing && editingContact && (
         <EditPopup
-          contact={editingContact}
-          onClose={() => setIsEditing(false)}
-          onSave={saveEdit}
+          contact={editingContact} // Se pasa el contacto seleccionado como prop "contact"
+          onClose={() => setIsEditing(false)} // Función para cerrar el popup
+          onSave={saveEdit} // Función para guardar los cambios
+        />
+      )}
+
+      {isError && errorMessage && (
+        <ErrorPopUp
+          errorMessage={errorMessage}
         />
       )}
 

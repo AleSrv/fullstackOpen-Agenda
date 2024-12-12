@@ -19,12 +19,16 @@ const EditPopup = ({ contact, onClose, onSave }) => {
                 <input
                     type="text"
                     value={localContact.name}
-                    onChange={(e) => setLocalContact({ ...localContact, name: e.target.value })}
+                    onChange={(e) =>
+                        setLocalContact({ ...localContact, name: e.target.value })
+                    }
                 />
                 <input
                     type="text"
                     value={localContact.phone}
-                    onChange={(e) => setLocalContact({ ...localContact, phone: e.target.value })}
+                    onChange={(e) =>
+                        setLocalContact({ ...localContact, phone: e.target.value })
+                    }
                 />
                 <button onClick={handleSave}>Guardar</button>
                 <button onClick={onClose}>Cancelar</button>
@@ -32,6 +36,7 @@ const EditPopup = ({ contact, onClose, onSave }) => {
         </div>
     );
 };
+
 
 EditPopup.propTypes = {
     contact: PropTypes.shape({
