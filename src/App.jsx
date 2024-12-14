@@ -9,6 +9,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { capitalizeWords } from "./utils/stringUtils";
 import { validarTelefonoEspanol } from "./utils/validarUtils";
 import ErrorPopUp from "./components/ErrorPopUp";
+import { handleError } from "./utils/errorUtils";
+
+
 
 const App = () => {
   const [contacts, setContacts] = useState([]); // state Array contactos
@@ -23,6 +26,7 @@ const App = () => {
   const [showSave, setShowSave] = useState(false); // Controla la visibilidad del FormPhone
   const [errorMessage, setErrorMessage] = useState("")
   const [isError, setIsError] = useState(false); // Controla popup Errores
+  // const [isLoading, setIsLoading] = useState(false); // Carga de datos
 
   useEffect(() => {
     //CONEXION servidor GET
@@ -32,12 +36,7 @@ const App = () => {
         setContacts(initialContacts);
       })
       .catch((error) => {
-        setErrorMessage("Error fetching data:", error);
-        setIsError(true);
-        setTimeout(() => {
-          setIsError(false);
-          setErrorMessage(null)
-        }, 3000)
+        handleError(setErrorMessage, setIsError, "Error fetching data:", error);
       });
   }, []);
 
@@ -64,15 +63,9 @@ const App = () => {
       return;
     }
 
-    const formattedName = capitalizeWords(name.trim());
-    setName(formattedName); // Formatear el nombre al estilo capitalizado.
-
-    // Buscar nombre en contactos
-    const foundPerson = contacts.find(person => person.name === formattedName);
-
     // Validar el teléfono
     if (!validarTelefonoEspanol(phone.trim())) {
-      setErrorMessage("El teléfono no es válido. Debe comenzar con 6, 7, 8 o 9 y tener 9 dígitos.");
+      setErrorMessage("El teléfono tiene que ser un número comenzado con 6, 7, 8 o 9 y tener 9 dígitos.");
       setIsError(true);
       setTimeout(() => {
         setIsError(false);
@@ -81,24 +74,35 @@ const App = () => {
       return;
     }
 
+    const formattedName = capitalizeWords(name.trim());
+    setName(formattedName); // Formatear el nombre al estilo capitalizado.
+
+    // Buscar telefono en contactos
+    const foundPhone = contacts.find(person => person.phone === phone);
+
     let contactToSave;
 
-    if (foundPerson) {
-      // Si el contacto existe, preguntar si quiere sobrescribir el teléfono
-      const confirmUpdate = window.confirm(`El contacto con el nombre "${formattedName}" ya existe. ¿Quieres actualizar el teléfono?`);
+    // CASO Telefono y nombre existente
+    if (foundPhone && (foundPhone.name === formattedName)) {
+      alert(`El contacto ${formattedName} con telefono: ${phone} ya existe en la base de datos`)
+      return;
+    }
+    // CASO Telefono existente pero nombre diferente
+    if (foundPhone) {
+      const confirmName = window.confirm(`El teléfono ${foundPhone.phone} ya esxiste en el contacto: ${foundPhone.name}.\nDesea sobreescribir?`);
 
-      if (confirmUpdate) {
-        // Si el usuario confirma, actualizamos solo el teléfono
+      //CASO Telefono existente sobreescribe nombre
+      if (confirmName) {
         contactToSave = {
-          id: foundPerson.id,
-          name: foundPerson.name,
-          phone: phone.trim(),  // Solo se actualiza el teléfono
-          favorite: foundPerson.favorite
+          id: foundPhone.id,
+          name: formattedName,
+          phone: foundPhone.phone,
+          favorite: false
         };
 
         // CONEXION servidor PUT
         contactsService
-          .update(foundPerson.id, contactToSave)
+          .update(foundPhone.id, contactToSave)
           .then((updatedContact) => {
             // Actualizar en el estado
             setContacts(contacts.map(contact =>
@@ -108,21 +112,17 @@ const App = () => {
             setPhone("");
           })
           .catch((error) => {
-            setErrorMessage("Error fetching data:", error);
-            setIsError(true);
-            setTimeout(() => {
-              setIsError(false);
-              setErrorMessage(null)
-            }, 3000)
+            handleError(setErrorMessage, setIsError, "Error fetching data:", error);
           });
       } else {
         // Si el usuario cancela la acción, no hacer nada
         setName("");  // Limpiar el formulario
         setPhone("");
       }
-
-    } else {
-      // Si no se encuentra el contacto, crear uno nuevo
+    }
+    // CASO Telefono no existente
+    // Si no se encuentra el contacto, crear uno nuevo
+    else {
       contactToSave = {
         id: uuidv4(),
         name: formattedName,
@@ -139,15 +139,11 @@ const App = () => {
           setPhone("");
         })
         .catch((error) => {
-          setErrorMessage("Error adding contact:", error);
-          setIsError(true);
-          setTimeout(() => {
-            setIsError(false);
-            setErrorMessage(null)
-          }, 3000)
+          handleError(setErrorMessage, setIsError, "Error adding contact:", error);
         });
     }
-  };
+  }
+
 
   // Borrar contacto
   const handleDelete = (id) => {
@@ -161,12 +157,7 @@ const App = () => {
           setContacts(contactsTemp);
         })
         .catch((error) => {
-          setErrorMessage("Error deleting contact:", error);
-          setIsError(true);
-          setTimeout(() => {
-            setIsError(false);
-            setErrorMessage(null)
-          }, 3000)
+          handleError(setErrorMessage, setIsError, "Error deleting contact:", error);
         });
     }
   };
@@ -187,12 +178,7 @@ const App = () => {
         ));
       })
       .catch((error) => {
-        setErrorMessage("Error updating contact:", error);
-        setIsError(true);
-        setTimeout(() => {
-          setIsError(false);
-          setErrorMessage(null)
-        }, 3000)
+        handleError(setErrorMessage, setIsError, "Error updating contact:", error);
       });
   };
 
@@ -247,12 +233,7 @@ const App = () => {
         setEditingContact(null);
       })
       .catch((error) => {
-        setErrorMessage("Error updating contact:", error);
-        setIsError(true);
-        setTimeout(() => {
-          setIsError(false);
-          setErrorMessage(null)
-        }, 3000)
+        handleError(setErrorMessage, setIsError, "Error updating contact:", error);
       });
   };
 

@@ -1,16 +1,5 @@
 {
   "contacts": [
-    {
-      "id": "a52706fb-0f2c-45a2-b01c-b101d5eb8119",
-      "name": "manuela",
-      "phone": "789456123",
-      "favorite": false
-    },
-    {
-      "id": "2693d8e4-47ee-4949-b0f7-a26cad5846a9",
-      "name": "Lucia",
-      "phone": "654987321",
-      "favorite": true
-    }
+  
   ]
 }
