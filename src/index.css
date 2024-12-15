@@ -64,8 +64,6 @@ h2 {
 button {
   border-radius: var(--border-radius);
   border: 2px solid;
-  /* padding: 0.6em 1.2em; */
-  /* font-size: var(--button-font-size); */
   font-weight: 500;
   font-family: inherit;
   background-color: var(--button-bg-color);
@@ -129,9 +127,7 @@ input {
   box-shadow: 2px 2px 5px var(--shadow-color);
   color: var(--primary-text-color);
   transition: border-color var(--transition-speed);
-  margin-bottom: var(
-    --input-margin-bottom
-  ); /* Más separación entre los inputs */
+  margin-bottom: var(--input-margin-bottom); /* Más separación entre los inputs */
   margin-top: 10px;
 }
 
@@ -155,13 +151,9 @@ label input[type="checkbox"] {
   margin-right: 10px;
   width: auto;
   box-shadow: none;
-  accent-color: var(
-    --button-bg-color
-  ); /* Establece color del checkbox en modo oscuro */
+  accent-color: var(--button-bg-color); /* Establece color del checkbox en modo oscuro */
   margin-left: 10px; /* Añadir margen a la izquierda del checkbox */
-  margin-bottom: var(
-    --checkbox-margin-bottom
-  ); /* Más separación entre los checkbox */
+  margin-bottom: var(--checkbox-margin-bottom); /* Más separación entre los checkbox */
 }
 
 /* Contenedor base de formulario */
@@ -199,24 +191,28 @@ img {
 }
 
 /* MENSAJE ERROR  */
-.error {
-  color: red;
-  font-size: 15px;
-  border-style: solid;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-
+.error-popup {
   position: fixed;
-  top: 10%;
-  left: 40%;
-  width: 20%;
-  height: 20%;
-  background:lightgrey;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999; /* Asegura que el popup esté sobre todo */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid red;
+  padding: 20px;
+  z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.error-message {
+  margin-bottom: 10px;
+}
+
+.close-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
 /* Estilos adicionales para el modo oscuro */

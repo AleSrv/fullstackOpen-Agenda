@@ -1,0 +1,85 @@
+/* Estilos del formulario */
+.form-phone {
+  max-width: 400px;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+/* Contenedor de botones */
+.form-buttons {
+  display: flex;
+  justify-content: space-between; /* Espacio entre botones */
+  gap: 0.5rem; /* Espacio entre botones */
+}
+
+/* Botón Guardar */
+.form-submit {
+  flex: 1; /* Ambos botones tienen el mismo tamaño */
+  padding: 0.75rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-submit:hover {
+  background-color: #2980b9;
+}
+
+.form-submit:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Botón Cancelar */
+.form-cancel {
+  flex: 1; /* Ambos botones tienen el mismo tamaño */
+  padding: 0.75rem;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-cancel:hover {
+  background-color: #c0392b;
+}

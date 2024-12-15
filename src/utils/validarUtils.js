@@ -10,6 +10,9 @@ export function validarTelefonoEspanol(telefono) {
 
   // Expresión regular para validar el formato
   const regexTelefonoEspanol = /^(6|7|8|9)\d{8}$/;
-
-  return regexTelefonoEspanol.test(telefonoLimpio);
+  if (regexTelefonoEspanol.test(telefonoLimpio)) {
+    return telefonoLimpio;
+  } else {
+    return false;
+  }
 }
