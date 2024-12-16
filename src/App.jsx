@@ -1,3 +1,4 @@
+//src\App.jsx
 import { useState } from "react";
 import "./styles/loading.css";
 import "./styles/App.css";
@@ -6,7 +7,6 @@ import EditPopup from "./components/EditPopup";
 import Loading from "./components/Loading";
 import { motion, AnimatePresence } from "framer-motion";
 import { validateAndPrepareContact } from "./utils/contactUtils";
-// import { useContacts } from "./Hooks/useContacts";
 import { useFilter } from "./hooks/useFilter";
 import FormPhone from "./components/FormPhone";
 import { useContacts } from "./hooks/useContacts";
