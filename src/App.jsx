@@ -8,8 +8,8 @@ import Loading from "./components/Loading";
 import { motion, AnimatePresence } from "framer-motion";
 import { validateAndPrepareContact } from "./utils/contactUtils";
 import FormPhone from "./components/FormPhone";
-import { useContacts } from "./hooks/useContacts";
 import { useFilter } from "./Hooks/useFilter";
+import { useContacts } from "./hooks/useContacts";
 
 const App = () => {
   const [actualContact, setActualContact] = useState({ name: "", phone: "" });
@@ -27,7 +27,7 @@ const App = () => {
     toggleFavorite,
     setIsError,
     setErrorMessage
-  } = useContacts()
+  } = useContacts
 
   const {
     filter,
