@@ -7,9 +7,9 @@ import EditPopup from "./components/EditPopup";
 import Loading from "./components/Loading";
 import { motion, AnimatePresence } from "framer-motion";
 import { validateAndPrepareContact } from "./utils/contactUtils";
-import { useFilter } from "./hooks/useFilter";
 import FormPhone from "./components/FormPhone";
 import { useContacts } from "./hooks/useContacts";
+import { useFilter } from "./Hooks/useFilter";
 
 const App = () => {
   const [actualContact, setActualContact] = useState({ name: "", phone: "" });
@@ -27,7 +27,7 @@ const App = () => {
     toggleFavorite,
     setIsError,
     setErrorMessage
-  } = useContacts
+  } = useContacts()
 
   const {
     filter,
@@ -35,7 +35,7 @@ const App = () => {
     showSearch,
     setShowSearch,
     filterContacts
-  } = useFilter();
+  } = useFilter()
 
   let displayedContacts = filterContacts(contacts);
 
