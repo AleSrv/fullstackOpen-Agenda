@@ -6,14 +6,17 @@ import EditPopup from "./components/EditPopup";
 import Loading from "./components/Loading";
 import { motion, AnimatePresence } from "framer-motion";
 import { validateAndPrepareContact } from "./utils/contactUtils";
-import { useContacts } from "./hooks/useContacts";
+// import { useContacts } from "./Hooks/useContacts";
 import { useFilter } from "./hooks/useFilter";
 import FormPhone from "./components/FormPhone";
+import { useContacts } from "./hooks/useContacts";
 
 const App = () => {
   const [actualContact, setActualContact] = useState({ name: "", phone: "" });
   const [isEditing, setIsEditing] = useState(false);
   const [showSave, setShowSave] = useState(false);
+  const [order, setOrder] = useState(false); // checkbox Orden alfabético
+  const [favorites, setFavorites] = useState(false); // checkbox favoritos 
 
   const {
     contacts,
@@ -24,7 +27,7 @@ const App = () => {
     toggleFavorite,
     setIsError,
     setErrorMessage
-  } = useContacts();
+  } = useContacts
 
   const {
     filter,
@@ -34,7 +37,7 @@ const App = () => {
     filterContacts
   } = useFilter();
 
-  const displayedContacts = filterContacts(contacts);
+  let displayedContacts = filterContacts(contacts);
 
   const handleValidationError = (result) => {
     if (result.error) {
@@ -103,11 +106,30 @@ const App = () => {
     return <Loading />;
   }
 
-  //Cerrar formulario crear contacto
+  //Cerrar formulario al crear contacto
   const handleCloseForm = () => {
     setActualContact({ name: "", phone: "" });
     setShowSave(false); // Esto también cerrará el formulario visualmente
   };
+
+  const handleCheckboxChange = (e) => {
+    setOrder(e.target.checked);  // Según checked guardo en state order
+  };
+
+  const handleCheckboxFavorite = (e) => {
+    setFavorites(e.target.checked)
+  }
+
+  // Filtrar contactos por nombre y por favoritos
+  const filteredContacts = contacts
+    .filter(contact => contact.name.toLowerCase().includes(filter.toLowerCase())) // Filtro por nombre
+    .filter(contact => (favorites ? contact.favorite : true)); // Filtro por favoritos
+
+
+  // Ordenar contactos si el checkbox está activo
+  displayedContacts = order
+    ? [...filteredContacts].sort((a, b) => a.name.localeCompare(b.name))
+    : filteredContacts;
 
   return (
     <div>
@@ -168,6 +190,29 @@ const App = () => {
           onClose={handleCloseForm} // Pasar handleCloseForm aquí
         />
       )}
+
+      <h2>Listado de Contactos:</h2>
+      <label>
+        Orden alfabético
+        <input
+          type="checkbox"
+          name="order"
+          id="order"
+          checked={order}
+          onChange={handleCheckboxChange}
+        />
+      </label>
+
+      <label>
+        Mostrar favoritos
+        <input
+          type="checkbox"
+          name="favorites"
+          id="favorites"
+          checked={favorites}
+          onChange={handleCheckboxFavorite}
+        />
+      </label>
 
       {displayedContacts.length > 0 ? (
         <DisplayedPersons
