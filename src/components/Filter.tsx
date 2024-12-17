@@ -1,5 +1,6 @@
 import React from 'react';
 import { FilterType } from '../types';
+import './components.css'
 
 interface Props {
   searchTerm: string;
@@ -20,22 +21,23 @@ export const Filter: React.FC<Props> = ({
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search by name or number..."
+        placeholder="Buscar por nombre o teléfono..."
         className="search-input"
       />
-      <div style={{ marginTop: '1rem' }}>
+      <div className='todos'>
         <button
+          id='todos'
           className={`button ${filterType === 'all' ? 'active' : ''}`}
           onClick={() => setFilterType('all')}
           style={{ marginRight: '0.5rem' }}
         >
-          All Contacts
+          Todos
         </button>
         <button
           className={`button ${filterType === 'favorites' ? 'active' : ''}`}
           onClick={() => setFilterType('favorites')}
         >
-          Favorites
+          Favoritos
         </button>
       </div>
     </div>

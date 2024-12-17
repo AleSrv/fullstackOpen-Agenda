@@ -17,10 +17,10 @@ export const ContactForm: React.FC<Props> = ({ addContact }) => {
 
   return (
     <div className="form-container">
-      <h2>Add New Contact</h2>
+      <h2>Agregar nuevo contacto</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name">Nombre</label>
           <input
             type="text"
             id="name"
@@ -31,7 +31,7 @@ export const ContactForm: React.FC<Props> = ({ addContact }) => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="number">Number</label>
+          <label htmlFor="number">Teléfono</label>
           <input
             type="tel"
             id="number"
@@ -42,7 +42,7 @@ export const ContactForm: React.FC<Props> = ({ addContact }) => {
         </div>
 
         <button type="submit" className="button">
-          Add Contact
+          Agregar contacto
         </button>
       </form>
     </div>
