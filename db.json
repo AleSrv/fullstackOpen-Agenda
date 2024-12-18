@@ -1,3 +1,16 @@
 {
-    "contacts":[]
+  "contacts": [
+    {
+      "id": "489a8aed-fcd8-4df7-be03-deeaa5f8705d",
+      "name": "Ale",
+      "number": "999999999",
+      "isFavorite": false
+    },
+    {
+      "id": "e65ff033-cf45-4248-bd25-333520175511",
+      "name": "Nico",
+      "number": "666666666",
+      "isFavorite": false
+    }
+  ]
 }

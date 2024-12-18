@@ -14,7 +14,7 @@ export const ContactList: React.FC<Props> = ({
 }) => {
   if (contacts.length === 0) {
     return (
-      <div id='contacto'>
+      <div id="contacto">
         No se encuentran contactos
       </div>
     );
@@ -25,12 +25,14 @@ export const ContactList: React.FC<Props> = ({
       {contacts
         .slice() // Crea una copia para evitar mutar el estado original
         .sort((a, b) => a.name.localeCompare(b.name)) // Ordena alfabéticamente por nombre
-        .map((contact) => (
+        .map((contact, index) => (
           <li key={contact.id} className="contact-item">
             <div className="contact-info">
-              <div className="contact-name">{contact.name}</div>
-              <div className="contact-number">{contact.number}</div>
+              {/* Agregar número de contacto */}
+              <div className="contact-name">{index + 1}. {contact.name}</div>
+              <div className="contact-number"><strong>Teléfono:</strong> {contact.number}</div>
             </div>
+            <hr />
             <div className="contact-actions">
               <button
                 onClick={() => toggleFavorite(contact.id)}
@@ -51,4 +53,4 @@ export const ContactList: React.FC<Props> = ({
         ))}
     </ul>
   );
-}  
+};

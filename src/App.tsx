@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Contact, Notification as NotificationType, FilterType } from './types';
 import { Header } from './components/Header';
 import { Filter } from './components/Filter';
@@ -7,61 +8,103 @@ import { ContactList } from './components/ContactList';
 import { Notification } from './components/Notification';
 import './styles/global.css';
 
+const URL = 'http://localhost:5000/contacts';
+
+const NOTIFICATION_TYPES = {
+  SUCCESS: 'success',
+  ERROR: 'error',
+} as const;
+
+type NotificationTypeKey = typeof NOTIFICATION_TYPES[keyof typeof NOTIFICATION_TYPES];
+
 function App() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [notification, setNotification] = useState<NotificationType | null>(null);
 
-  //funcion primera letra mayúscula
+  // Leer (GET) - useEffect
+  useEffect(() => {
+    axios
+      .get(URL)
+      .then(response => {
+        setContacts(response.data);
+      })
+      .catch(() => {
+        showNotification('Error al cargar contactos', NOTIFICATION_TYPES.ERROR);
+      });
+  }, []);
+
+  // Función primera letra mayúscula
   const capitalizeFirstLetter = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   };
 
-
-  //mostrar notificaciion
-  const showNotification = (message: string, type: 'success' | 'error') => {
+  // Mostrar notificación
+  const showNotification = (message: string, type: NotificationTypeKey) => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 5000);
   };
 
-  //AGREGAR CONTACTO
+  // Crear (POST) - addContact
   const addContact = (name: string, number: string) => {
     const formattedName = capitalizeFirstLetter(name.trim());
 
-    //buscar NOMBRE en BBDD
+    // Buscar NOMBRE en BBDD
     const existingContactByName = contacts.find(c =>
       c.name.localeCompare(formattedName, undefined, { sensitivity: 'base' }) === 0
     );
 
-    // buscar TELEFONO en BBDD
-    const existingContactByNumber = contacts.find(c =>
-      c.number === number
-    );
+    // Buscar TELÉFONO en BBDD
+    const existingContactByNumber = contacts.find(c => c.number === number);
 
-    //SI NOMBRE en BBDD
+    // Si NOMBRE en BBDD
     if (existingContactByName) {
       if (window.confirm(`${formattedName} ya existe. ¿Quiere actualizar el número?`)) {
-        const updatedContacts = contacts.map(c =>
-          c.id === existingContactByName.id ? { ...c, number } : c
-        );
-        setContacts(updatedContacts);
-        showNotification(`Actualizando teléfono de ${formattedName}'s`, 'success');
+        axios
+          .put(`${URL}/${existingContactByName.id}`, {
+            ...existingContactByName,
+            number,
+          })
+          .then(response => {
+            setContacts(contacts.map(contact =>
+              contact.id === existingContactByName.id ? response.data : contact
+            ));
+            showNotification('Contacto actualizado', NOTIFICATION_TYPES.SUCCESS);
+          })
+          .catch(() => {
+            showNotification('Error al actualizar contacto', NOTIFICATION_TYPES.ERROR);
+          });
       }
       return;
     }
 
-    //SI TELEFONO en BBDD
+    // Si TELÉFONO en BBDD
     if (existingContactByNumber) {
-      if (window.confirm(`El número existe con nombre ${existingContactByNumber.name}. ¿Quiere crear un nuevo contacto?`)) {
-        const newContact = {
-          id: crypto.randomUUID(),
-          name: formattedName,
-          number,
-          isFavorite: false
-        };
-        setContacts([...contacts, newContact]);
-        showNotification(`Contacto ${formattedName} agregado`, 'success');
+      if (window.confirm(`El número ya existe con nombre ${existingContactByNumber.name}. ¿Quiere reemplazarlo con un nuevo contacto?`)) {
+        axios
+          .delete(`${URL}/${existingContactByNumber.id}`) // Eliminar contacto con el mismo número
+          .then(() => {
+            const newContact = {
+              id: crypto.randomUUID(),
+              name: formattedName,
+              number,
+              isFavorite: false,
+            };
+
+            axios
+              .post(URL, newContact)
+              .then(response => {
+                setContacts([...contacts.filter(c => c.id !== existingContactByNumber.id), response.data]);
+                showNotification(`Contacto ${formattedName} agregado`, NOTIFICATION_TYPES.SUCCESS);
+              })
+              .catch(() => {
+                showNotification('Error al agregar contacto', NOTIFICATION_TYPES.ERROR);
+              });
+          })
+          .catch(() => {
+            showNotification('Error al eliminar contacto duplicado', NOTIFICATION_TYPES.ERROR);
+          });
       }
       return;
     }
@@ -70,30 +113,58 @@ function App() {
       id: crypto.randomUUID(),
       name: formattedName,
       number,
-      isFavorite: false
+      isFavorite: false,
     };
 
-    setContacts([...contacts, newContact]);
-    showNotification(`Contacto ${formattedName} agregado`, 'success');
+    axios
+      .post(URL, newContact)
+      .then(response => {
+        setContacts([...contacts, response.data]);
+        showNotification(`Contacto ${formattedName} agregado`, NOTIFICATION_TYPES.SUCCESS);
+      })
+      .catch(() => {
+        showNotification('Error al agregar contacto', NOTIFICATION_TYPES.ERROR);
+      });
   };
 
 
+  // Eliminar (DELETE) - deleteContact
   const deleteContact = (id: string) => {
     const contact = contacts.find(c => c.id === id);
     if (!contact) return;
 
     if (window.confirm(`Borrar ${contact.name}?`)) {
-      setContacts(contacts.filter(c => c.id !== id));
-      showNotification(`Borrando ${contact.name}`, 'success');
+      axios
+        .delete(`${URL}/${id}`)
+        .then(() => {
+          setContacts(contacts.filter(contact => contact.id !== id));
+          showNotification(`Contacto eliminado`, NOTIFICATION_TYPES.SUCCESS);
+        })
+        .catch(() => {
+          showNotification('Error al eliminar contacto', NOTIFICATION_TYPES.ERROR);
+        });
     }
   };
 
+  // Actualizar (PATCH) - toggleFavorite
   const toggleFavorite = (id: string) => {
-    setContacts(contacts.map(contact =>
-      contact.id === id
-        ? { ...contact, isFavorite: !contact.isFavorite }
-        : contact
-    ));
+    const contactToUpdate = contacts.find(c => c.id === id);
+    if (!contactToUpdate) return;
+
+    axios
+      .patch(`${URL}/${id}`, { isFavorite: !contactToUpdate.isFavorite })
+      .then(response => {
+        setContacts(contacts.map(contact =>
+          contact.id === id ? response.data : contact
+        ));
+        showNotification(
+          `${contactToUpdate.isFavorite ? `${contactToUpdate.name} eliminado de` : `${contactToUpdate.name} agregado a`} favoritos`,
+          NOTIFICATION_TYPES.SUCCESS
+        );
+      })
+      .catch(() => {
+        showNotification('Error al actualizar favorito', NOTIFICATION_TYPES.ERROR);
+      });
   };
 
   const filteredContacts = contacts
